@@ -30,7 +30,43 @@ const ServiceManagement = () => {
     const [ciName, setCIName] = useState('CM0915506');
     const [fromDate, setFromDate] = useState('2023-12-07');
     const [toDate, setToDate] = useState('2023-12-12');
+    const [performanceData, setPerformanceData] = useState({});
+    const [errorMessage, setErrorMessage] = useState('');
 
+    // Data for multiple CIs
+    const ciPerformanceData = {
+        'CM0915506': {
+            labels: ['Dec 7', 'Dec 8', 'Dec 9', 'Dec 10', 'Dec 11', 'Dec 12'],
+            data: [85, 90, 78, 88, 92, 95],
+        },
+        'CM0915507': {
+            labels: ['Dec 7', 'Dec 8', 'Dec 9', 'Dec 10', 'Dec 11', 'Dec 12'],
+            data: [75, 80, 70, 85, 87, 90],
+        },
+        'CM0915508': {
+            labels: ['Dec 7', 'Dec 8', 'Dec 9', 'Dec 10', 'Dec 11', 'Dec 12'],
+            data: [65, 70, 68, 72, 75, 78],
+        },
+    };
+
+    // Function to handle Load
+    const handleLoad = () => {
+        if (ciPerformanceData[ciName]) {
+            setPerformanceData(ciPerformanceData[ciName]);
+            setErrorMessage('');
+        } else {
+            setPerformanceData({});
+            setErrorMessage('CI not found. Please enter a valid CI Name.');
+        }
+    };
+
+    // Load initial data
+    React.useEffect(() => {
+        handleLoad();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Sample statusBars data (can be modified similarly if needed)
     const statusBars = [
         {
             label: 'Security',
@@ -39,31 +75,16 @@ const ServiceManagement = () => {
                 { color: 'bg-green-500', width: '90%' },
             ],
         },
-        {
-            label: 'Resource',
-            values: [
-                { color: 'bg-red-500', width: '10%' },
-                { color: 'bg-green-500', width: '60%' },
-                { color: 'bg-yellow-500', width: '30%' },
-            ],
-        },
-        {
-            label: 'Utility',
-            values: [
-                { color: 'bg-red-500', width: '10%' },
-                { color: 'bg-green-500', width: '60%' },
-                { color: 'bg-yellow-500', width: '30%' },
-            ],
-        },
+        // ... other status bars
     ];
 
-    // Sample data for the chart
+    // Chart data setup
     const chartData = {
-        labels: ['Dec 7', 'Dec 8', 'Dec 9', 'Dec 10', 'Dec 11', 'Dec 12'],
+        labels: performanceData.labels || [],
         datasets: [
             {
                 label: 'Service Performance',
-                data: [85, 90, 78, 88, 92, 95],
+                data: performanceData.data || [],
                 fill: false,
                 borderColor: 'rgb(99, 102, 241)', // Indigo color
                 backgroundColor: 'rgba(99, 102, 241, 0.5)',
@@ -80,7 +101,7 @@ const ServiceManagement = () => {
             },
             title: {
                 display: true,
-                text: 'Service Performance Over Time',
+                text: `Service Performance Over Time for ${ciName}`,
             },
         },
     };
@@ -109,8 +130,9 @@ const ServiceManagement = () => {
                         onChange={(e) => setToDate(e.target.value)}
                         className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    <Button>Load</Button>
+                    <Button onClick={handleLoad}>Load</Button>
                 </div>
+                {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
             </Card>
             <Card className="mb-8">
                 {statusBars.map((bar, index) => (
@@ -130,9 +152,13 @@ const ServiceManagement = () => {
             </Card>
             <Card>
                 <h3 className="text-xl font-semibold mb-4 text-indigo-700">Performance Chart</h3>
-                <div className="h-80">
-                    <Line data={chartData} options={chartOptions} />
-                </div>
+                {performanceData.labels ? (
+                    <div className="h-80">
+                        <Line data={chartData} options={chartOptions} />
+                    </div>
+                ) : (
+                    <p className="text-gray-500">No data available. Please enter a valid CI Name and load data.</p>
+                )}
             </Card>
         </div>
     );
