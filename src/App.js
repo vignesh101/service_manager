@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import CIScreen from './pages/CIScreen';
+import ServerPatchDetails from './pages/ServerPatchDetails';
+import ServiceManagement from './pages/ServiceManagement';
+import ServiceManager from './pages/ServiceManager';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/ci-screen" element={<CIScreen />} />
+          <Route path="/server-patch" element={<ServerPatchDetails />} />
+          <Route path="/service-management" element={<ServiceManagement />} />
+          <Route path="/service-manager" element={<ServiceManager />} />
+        </Routes>
+      </Layout>
+    </Router>
+);
 
 export default App;
