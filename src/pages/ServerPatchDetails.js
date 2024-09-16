@@ -1,8 +1,7 @@
-// src/pages/ServerPatchDetails.js
-
 import React, { useState } from 'react';
 import Card from '../components/Card';
-import Button from '../components/Button';
+// Removed unused import of 'Button'
+// import Button from '../components/Button';
 
 const ServerPatchDetails = () => {
     const [selectedServer, setSelectedServer] = useState('p03p6p0w3524');
@@ -63,7 +62,7 @@ const ServerPatchDetails = () => {
         if (serverData[selectedServer]) {
             setServerDetails(serverData[selectedServer]);
         }
-    }, [selectedServer]);
+    }, [selectedServer, serverData]); // Added 'serverData' to dependency array
 
     return (
         <div>
